@@ -2,5 +2,5 @@ class Manager < ApplicationRecord
   belongs_to :director
 
   has_one :ceo, through: :director
-  has_many :workers
+  has_many :workers, dependent: :destroy
 end
