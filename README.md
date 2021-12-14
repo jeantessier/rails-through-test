@@ -1,24 +1,53 @@
-# README
+# Through Test
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A sample app that illustrates `has_many` `through:` associations through
+multiple underlying associations.
 
-Things you may want to cover:
+I wanted to see if `has_many:` `through:` associations could span multiple
+associations.  For example:
 
-* Ruby version
+```
++-----+
+| Ceo |
++-----+
+ | | |  has_many   +----------+
+ | | +----------->*| Director |
+ | |               +----------+
+ | |                       | |  has_many   +---------+
+ | |   through             | +----------->*| Manager |
+ | +-----------------------|------------->*+---------+
+ |                         |                       |  has_many
+ |                         |   through             +----------->*+----------+
+ |   through               +----------------------------------->*+  Worker  +
+ +------------------------------------------------------------->*+----------+
 
-* System dependencies
+```
 
-* Configuration
+I also wanted to see if I could do the same with `has_one:` `through:`
+associations in the reverse direction.
 
-* Database creation
+With this setup, I can create CEOs, directors, managers, and workers.
 
-* Database initialization
+```ruby
+c = Ceo.create!
+5.times do
+  d = c.directors.create!
+  5.times do
+    m = d.managers.create!
+    5.times do
+      m.workers.create!
+    end
+  end
+end
 
-* How to run the test suite
+c.workers.pluck(:id)
+# => [1, 2, ..., 125]
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## To Run
 
-* Deployment instructions
+There is no UI per se.  You can  experiment through the Rails console.
 
-* ...
+```bash
+bin/rails console
+```
