@@ -1,4 +1,4 @@
-# Through Test
+# Rails Through Test
 
 A sample app that illustrates `has_many` `through:` associations through
 multiple underlying associations.
