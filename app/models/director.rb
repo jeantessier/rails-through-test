@@ -3,4 +3,8 @@ class Director < ApplicationRecord
 
   has_many :managers, dependent: :destroy
   has_many :workers, through: :managers
+
+  def cost
+    managers.collect(&:cost).sum
+  end
 end

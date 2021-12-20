@@ -26,7 +26,17 @@ associations.  For example:
 I also wanted to see if I could do the same with `has_one:` `through:`
 associations in the reverse direction.
 
-With this setup, I can create CEOs, directors, managers, and workers.
+## To Run
+
+There is no UI per se.  You can  experiment through the Rails console.
+
+```bash
+bin/rails console
+```
+
+## Generating Test Data
+
+You can create CEOs, directors, managers, and workers.
 
 ```ruby
 c = Ceo.create!
@@ -44,10 +54,17 @@ c.workers.pluck(:id)
 # => [1, 2, ..., 125]
 ```
 
-## To Run
+You can populate `hours` and `rate` like this:
 
-There is no UI per se.  You can  experiment through the Rails console.
+```ruby
+Worker.all.each do |worker|
+  worker.update(hours: Random.rand * 33, rate: 33 + Random.rand * 50)
+end
+```
 
-```bash
-bin/rails console
+If you don't mind that all records have the same values, you can issue a single
+update statement with the following:
+
+```ruby
+Worker.update_all(hours: Random.rand * 33, rate: 33 + Random.rand * 50)
 ```
