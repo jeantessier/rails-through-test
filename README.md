@@ -68,3 +68,31 @@ update statement with the following:
 ```ruby
 Worker.update_all(hours: Random.rand * 33, rate: 33 + Random.rand * 50)
 ```
+
+## Aggregating Data
+
+The `Ceo#cost` method walks down the hierarchy to compute a total cost, but it
+loads each `Worker` one at a time, leading to a `N+1` situation.
+
+```ruby
+Ceo.first.cost
+```
+
+You can do the calculation in the database instead.
+
+```ruby
+Ceo.where(id: 1).joins(directors: {managers: [:workers]}).sum("workers.hours * workers.rate")
+```
+
+> NOTE: Ruby and the database may use different precisions for floating-point
+> arithmetic, so the two computations may yield slightly different results.
+
+You can even use the `through:` associations to simplify things:
+
+```ruby
+Ceo.where(id: 1).joins(:workers).sum("workers.hours * workers.rate")
+```
+
+This database-centric approach breaks the encapsulation and exposes the database
+organization to the entire application, which can make some refactorings more
+difficult in the future.
